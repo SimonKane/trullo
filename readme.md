@@ -67,7 +67,7 @@ Följande urval är exempel på vidareutveckling. Egna förslag välkomnas.
 - Bifoga en kort **körguide** i `README.md` (hur man startar, env-variabler). En enkel `env.example` uppskattas.
 
 **Seed-data:**
-Repo ska också innehålla:
+Repo får gärna också innehålla:
 
 - En scriptad seed (t.ex. `npm run seed`) som skapar **minst 2 users** (varav 1 admin om du gör VG-auth) och **minst 4 tasks** med blandade statusar.
 - Lösenord i seed ska **hashas** (inte i klartext i DB).
