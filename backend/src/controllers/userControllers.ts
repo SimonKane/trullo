@@ -1,16 +1,15 @@
 import { User } from "../models/userModel";
 import { Request, Response } from "express";
-import mongoose, { isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import bcrypt from "bcrypt";
 
-export async function getUsers(req: Request, res: Response) {
+export async function getUsers(_req: Request, res: Response) {
   try {
     const users = await User.find();
 
-    return res.status(200).json({
-      users,
-      message: users.length === 0 ? "No users found" : "Users retrieved",
-    });
+    return users.length === 0
+      ? res.status(404).json({ message: "No users found" })
+      : res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -30,14 +29,24 @@ export async function createUser(req: Request, res: Response) {
     }
 
     //Kryptera och hasha lösenordet ->
+
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const createdUser = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    res.status(201).json(createdUser);
+    //Inte skicka med lösenordet i svaret
+    res.status(201).json({
+      message: "User created",
+      user: {
+        id: createdUser._id,
+        name: createdUser.name,
+        email: createdUser.email,
+      },
+    });
   } catch (error: any) {
     //Har redan typat obligatoriska fält så använder mig av mongoose error handling
     if (error.name === "ValidationError") {
@@ -75,6 +84,16 @@ export async function updateUser(req: Request, res: Response) {
       return res.status(400).json({ message: "Invalid Id" });
     }
     const { id } = req.params;
+    const loggedInUserId = (req as any).userId;
+    const role = (req as any).role;
+
+    //Kolla så det är admin eller rätt user (sin egen user) som uppdaterar
+    if (role !== "admin" && loggedInUserId !== id) {
+      return res
+        .status(403)
+        .json({ message: "Not allowed to update this user" });
+    }
+
     const { data } = req.body;
 
     //Kolla så det verkligen kommer in data att uppdatera user med
