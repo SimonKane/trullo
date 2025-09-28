@@ -94,11 +94,14 @@ export async function updateTask(req: Request, res: Response) {
       }
     }
 
-    //Kolla ifall uppdateringsdatan innehåller status-ändring (done) isåfall ändra finishedAt annars ta bort finishedAt
+    //Kolla ifall uppdateringsdatan innehåller status-ändring (done) isåfall ändra finishedAt annars ta bort finishedAt samt lägg till finishedBy baserat på req.userId från auth middleware
+
     if (data.status && data.status === "done") {
       data.finishedAt = new Date();
+      data.finishedBy = (req as any).userId;
     } else if (data.status && data.status !== "done") {
       data.finishedAt = null;
+      data.finishedBy = null;
     }
 
     const updatedTask = await Task.findByIdAndUpdate(

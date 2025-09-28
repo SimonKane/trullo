@@ -2,6 +2,7 @@ import { User } from "../models/userModel";
 import { Request, Response } from "express";
 import { isValidObjectId } from "mongoose";
 import bcrypt from "bcrypt";
+import { run } from "node:test";
 
 export async function getUsers(_req: Request, res: Response) {
   try {
@@ -148,6 +149,41 @@ export async function deleteUser(req: Request, res: Response) {
       return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+    const userId = (req as any).userId;
+    const role = (req as any).role;
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid Id" });
+    }
+
+    // Kolla så det är admin eller inloggad user som ändrar lösenord
+    if (role !== "admin" && userId !== id) {
+      res.status(403).json({
+        message: "Only admin or logged in user is allowed to reset password",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: { password: hashedPassword } },
+      { new: true, runValidators: true }
+    ).select({ password: 0 });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "Password reset", user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
