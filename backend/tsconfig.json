@@ -9,6 +9,6 @@
     "outDir": "dist",
     "baseUrl": "."
   },
-  "include": ["src"],
+  "include": ["src", "../trullo-frontend/src/auth"],
   "exclude": ["node_modules"]
 }
