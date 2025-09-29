@@ -34,3 +34,21 @@ if (role !== "admin" && loggedInUserId !== id) {
 ```
 
 [Update User Controller](./backend/src/controllers/userControllers.ts)
+
+Jag fick lite problem med indexeringen av user samt task-table. Så i min [index.ts](./backend/src/index.ts) har jag använt mig ag `ts await Promise.all([User.init(), Task.init()]);`. vilket gör att appen inte körs eller att request mot databasen börjar göras innan mongoose har kontrollerat schemat och skapar index om definieringar så som "unique" i detta fall har gjorts i modeller innan den kör igång. Detta förhindrar att exempelvis 2 användare med samma mail kan sparas innan ett unikt index finns.
+
+I övrigt så följer appen kanska straight forward logic. Man kan logga in, antingen så har man rollen admin eller user. När man loggar in så skapas en token där inloggat id samt role från användaren sparas. Detta kan användas mot endpoints som använder sig av olika controllers. En admin kan uppdatera alla användare medan en user kan endast uppdatera sin egen information. Båda typerna av användare kan skapa tasks som i sin tur kan tilldelas en användare. Detta sker genom att man kan uppdatera task och ändra "assignedTo" med en användares ID för att koppla dom samman. Om en tasks status ändras så har jag en kodsnippet som kollar efter ändringen. Och om ändringen klarmarkerar ("done") en task så sätts även en tidpunkt där den blev klarmarkerat samt av vem, dvs vem som var inloggad och ändrade status.
+
+```ts
+if (data.status && data.status === "done") {
+  data.finishedAt = new Date();
+  data.finishedBy = (req as any).userId;
+} else if (data.status && data.status !== "done") {
+  data.finishedAt = null;
+  data.finishedBy = null;
+}
+```
+
+från [Update task controller](./backend/src/controllers/taskControllers.ts).
+
+Tanken är att jag vill lägga till en registrerings-endpoint som skapar en användare. Men för tillfället kommer detta ske via en seed-fil. Instruktioner kommer nedan. Jag har även en tanke att göra en frontend likt ett klassiskt kanban board, där man ska kunna dra tasks mellan olika statuskolumner. Och beroende på vart man lägger en task så ska den uppdatera sin status beroende på föräldrakolumnens titel. För tillfället är det här jag har hunnit med och hoppas och vill fortsätta bygga på denna. Tycker det var en bra ingång till att lära sig relationer och på ett enkelt sätt kunna manövrera ändringar och struktur inom en NoSQL-databas.
