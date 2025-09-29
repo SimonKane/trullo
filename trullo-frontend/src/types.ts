@@ -1,6 +1,9 @@
-export type Id = string | number;
+export type Status = "to-do" | "in progress" | "done" | "blocked";
 
-export type Column = {
-  id: Id;
-  title: String;
-};
+export interface Task {
+  _id: string; // från MongoDB
+  title: string;
+  description?: string;
+  status: Status;
+  assignedTo?: string | null;
+}

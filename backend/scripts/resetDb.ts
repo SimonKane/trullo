@@ -1,4 +1,6 @@
-import { connectDB } from "../src/config/db.js"; // din befintliga connect-funktion
+//Detta skript ligger kvar då jag använde det för att rensa databasen under testutvecklingen.
+
+import { connectDB } from "../src/config/db.js";
 import { User } from "../src/models/userModel.js";
 import { Task } from "../src/models/taskModel.js";
 

@@ -52,3 +52,44 @@ if (data.status && data.status === "done") {
 från [Update task controller](./backend/src/controllers/taskControllers.ts).
 
 Tanken är att jag vill lägga till en registrerings-endpoint som skapar en användare. Men för tillfället kommer detta ske via en seed-fil. Instruktioner kommer nedan. Jag har även en tanke att göra en frontend likt ett klassiskt kanban board, där man ska kunna dra tasks mellan olika statuskolumner. Och beroende på vart man lägger en task så ska den uppdatera sin status beroende på föräldrakolumnens titel. För tillfället är det här jag har hunnit med och hoppas och vill fortsätta bygga på denna. Tycker det var en bra ingång till att lära sig relationer och på ett enkelt sätt kunna manövrera ändringar och struktur inom en NoSQL-databas.
+
+### Körinstruktioner
+
+För att testa endast backend så gå in i backendmappen och installera dependencies
+
+```bash
+cd backend
+npm install
+```
+
+Det finns en env.example-fil som visar hur env.filen ska vara uppbyggd. [`.env.example`](./.env.example)
+
+Sedan har jag en seed-fil som skapar 2 stycken användare där en är admin och en är vanlig user. Seed-filen har jag själv inte skrivit och har också använt mig av Faker.js för att generera olika task-titles
+
+```bash
+npm run seed
+```
+
+Så har du inloggningsuppfifterna:
+
+Admin Email: trullo.admin@example.com
+Admin Password: Passw0rd!
+
+---
+
+User Email: trullo.user@example.com
+User Password: Passw0rd!
+
+I brist på tid hann jag tyvärr inte en "register"-endpoint. Men däremot ska login funka.
+
+### Frontend
+
+Jag har även startat upp en frontend där tanken att all logik ska kunna göras via mina backend-endpoints. Då detta inte var ett krav så kommer jag fortsätta bygga på den. Men för tillfället så hämtas alla tasks och visas i respektive spalt efter status. Om tasken har en "assignedTo" så visas även denna. Man kan även "drag and drop" (med hjälp av ett library i npm) mellan spalterna och då ändras status på tasken. Just nu kan vem som helst som testar min frontend byta status på task. Dock i consolen dyker det upp ett "Not authorized"-error. Så alltså är man inte authorized på backend vilket gör att de intar sin ordinare status när man gör en reload på sidan. Alltså reggas ändringen för tillfället inte i databasen.
+
+För att köra både frontend och backend har jag ett script i frontend-mappen (glöm ej `npm install` i backend):
+
+```bash
+cd trullo-frontend
+npm install
+npm run dev:both
+```
