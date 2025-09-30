@@ -3,7 +3,6 @@ import { useAuth } from "./AuthContext";
 
 export default function LoginPage() {
   const { login } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
@@ -28,7 +27,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto mt-20 max-w-sm rounded bg-mainBackgroundColor p-6">
+    <div className="mx-auto mt-80  max-w-sm rounded bg-mainBackgroundColor p-6">
       <h1 className="mb-4 text-lg font-bold">Sign in</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <input

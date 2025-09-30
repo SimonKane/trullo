@@ -7,3 +7,10 @@ export interface Task {
   status: Status;
   assignedTo?: string | null;
 }
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin";
+}
