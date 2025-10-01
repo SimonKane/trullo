@@ -25,8 +25,6 @@ export default function KanbanBoard() {
   const [modalStatus, setModalStatus] = useState<string>("to-do");
   const { auth } = useAuth();
 
-  //TODO lägg till så man kan edit tasks
-
   async function getTasks() {
     try {
       const res = await fetch("http://localhost:3000/trullo/tasks");
