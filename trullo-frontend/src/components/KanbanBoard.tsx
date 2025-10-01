@@ -25,9 +25,7 @@ export default function KanbanBoard() {
   const [modalStatus, setModalStatus] = useState<string>("to-do");
   const { auth } = useAuth();
 
-  //TODO Delete tasks
-
-  //TODO lägg till så man kan tilldela tasks
+  //TODO lägg till så man kan edit tasks
 
   async function getTasks() {
     try {
@@ -60,6 +58,19 @@ export default function KanbanBoard() {
       getTasks();
     } catch (error) {
       console.error("ERROR adding task", error);
+    }
+  }
+
+  async function deleteTask(id: string) {
+    try {
+      const res = await fetch(`http://localhost:3000/trullo/tasks/${id}`, {
+        method: "DELETE",
+      });
+      console.log(res);
+      if (!res.ok) throw new Error("Could not delete task");
+      getTasks();
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -116,7 +127,8 @@ export default function KanbanBoard() {
           body: JSON.stringify({ data: { status: toStatus } }),
         }
       );
-      const data = await res.json();
+
+      if (!res.ok) throw new Error("Error updating task");
     } catch (e) {
       console.error(e);
     }
@@ -172,6 +184,10 @@ export default function KanbanBoard() {
                         >
                           {(dragProvided, _snapshot) => (
                             <TaskCard
+                              onUpdate={() => {
+                                getTasks();
+                              }}
+                              onDelete={deleteTask}
                               task={task}
                               innerRef={dragProvided.innerRef}
                               draggableProps={dragProvided.draggableProps}
