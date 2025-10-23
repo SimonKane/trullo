@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "dev": "tsx watch --clear-screen=false src/index.ts",
     "seed": "tsx scripts/seed.ts"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "type": "commonjs",
   "keywords": [],
@@ -31,6 +34,7 @@
     "@types/node": "^24.5.2",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
