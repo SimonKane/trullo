@@ -32,7 +32,16 @@ export async function login(req: Request, res: Response) {
     }
     const token = signToken(user);
 
-    res.status(200).json({ message: "Login successful", token: token });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        role: user.role,
+        email: user.email,
+        name: user.name,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

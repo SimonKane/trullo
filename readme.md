@@ -74,5 +74,3 @@ Repo får gärna också innehålla:
 - `assignedTo` i seed ska peka på befintlig user (eller vara `null`).
 - (Om auth) dokumentera testkonto i `README.md` (t.ex. `admin@example.com` / `Passw0rd!`).
 - Beskriv hur man kör seed i `README.md`.
-
-### Frontend

@@ -12,8 +12,17 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
+app.options(/.*/, cors(corsOptions));
 app.use("/trullo", taskRoutes);
 app.use("/trullo", userRoutes);
 
