@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../auth/AuthContext";
 import LogoutButton from "./LogoutButton";
 import AddTaskModal from "./AddTaskModal";
+import { API_BASE_URL } from "../config";
 
 const COLUMNS: { id: Status; title: string }[] = [
   { id: "to-do", title: "To Do" },
@@ -27,7 +28,7 @@ export default function KanbanBoard() {
 
   async function getTasks() {
     try {
-      const res = await fetch("http://localhost:3000/trullo/tasks");
+      const res = await fetch(`${API_BASE_URL}/trullo/tasks`);
       const data = await res.json();
       if (filterTaskByUser) {
         const filteredTasksByUser = tasks.filter(
@@ -44,7 +45,7 @@ export default function KanbanBoard() {
 
   async function addTask(task: any) {
     try {
-      const res = await fetch("http://localhost:3000/trullo/tasks", {
+      const res = await fetch(`${API_BASE_URL}/trullo/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +62,7 @@ export default function KanbanBoard() {
 
   async function deleteTask(id: string) {
     try {
-      const res = await fetch(`http://localhost:3000/trullo/tasks/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/trullo/tasks/${id}`, {
         method: "DELETE",
       });
       console.log(res);
@@ -114,17 +115,14 @@ export default function KanbanBoard() {
     );
 
     try {
-      const res = await fetch(
-        `http://localhost:3000/trullo/tasks/${draggableId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth?.token}`,
-          },
-          body: JSON.stringify({ data: { status: toStatus } }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/trullo/tasks/${draggableId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.token}`,
+        },
+        body: JSON.stringify({ data: { status: toStatus } }),
+      });
 
       if (!res.ok) throw new Error("Error updating task");
     } catch (e) {

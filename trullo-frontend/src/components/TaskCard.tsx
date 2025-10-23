@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Task } from "../types";
 import TrashIcon from "../icons/TrashIcon";
 import EditTaskModal from "./EditTaskModal";
+import { API_BASE_URL } from "../config";
 
 interface Props {
   task: Task;
@@ -49,7 +50,7 @@ export default function TaskCard({
       }
       try {
         const res = await fetch(
-          `http://localhost:3000/trullo/users/${task.assignedTo}`
+          `${API_BASE_URL}/trullo/users/${task.assignedTo}`
         );
         const data = await res.json();
         if (alive) setName(data?.name ?? "");

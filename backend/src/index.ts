@@ -12,11 +12,29 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
+
+// Tillåt både lokal utveckling och Railway production
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL || "",
+].filter(Boolean);
+
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) => {
+    // Tillåt requests utan origin (t.ex. Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-
   optionsSuccessStatus: 204,
 };
 

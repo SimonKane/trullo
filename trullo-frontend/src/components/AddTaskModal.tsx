@@ -1,5 +1,6 @@
 import { type User } from "../types";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../config";
 
 interface AskModalProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }: AskModalProps) => {
 
   async function getUsersFromDatabase() {
     try {
-      const res = await fetch("http://localhost:3000/trullo/users");
+      const res = await fetch(`${API_BASE_URL}/trullo/users`);
       const data = await res.json();
       setUsers(data);
     } catch (error) {

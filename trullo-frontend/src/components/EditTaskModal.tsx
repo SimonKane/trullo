@@ -1,6 +1,7 @@
 import { type Task, type User } from "../types";
 import { useState, useEffect } from "react";
 import { useAuth } from "../auth/AuthContext";
+import { API_BASE_URL } from "../config";
 
 interface EditProps {
   task: Task;
@@ -16,24 +17,21 @@ const EditTaskModal = ({ task, isOpen, onClose, onUpdate }: EditProps) => {
 
   async function updateTask() {
     try {
-      const res = await fetch(
-        `http://localhost:3000/trullo/tasks/${task._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth?.token}`,
+      const res = await fetch(`${API_BASE_URL}/trullo/tasks/${task._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.token}`,
+        },
+        body: JSON.stringify({
+          data: {
+            title: updatedTask.title,
+            description: updatedTask.description ?? "",
+            status: updatedTask.status,
+            assignedTo: updatedTask.assignedTo || null,
           },
-          body: JSON.stringify({
-            data: {
-              title: updatedTask.title,
-              description: updatedTask.description ?? "",
-              status: updatedTask.status,
-              assignedTo: updatedTask.assignedTo || null,
-            },
-          }),
-        }
-      );
+        }),
+      });
       if (!res.ok) throw new Error("Error updating task");
       onUpdate();
     } catch (error) {
@@ -55,7 +53,7 @@ const EditTaskModal = ({ task, isOpen, onClose, onUpdate }: EditProps) => {
 
   async function getUsersFromDatabase() {
     try {
-      const res = await fetch("http://localhost:3000/trullo/users");
+      const res = await fetch(`${API_BASE_URL}/trullo/users`);
       const data = await res.json();
       setUsers(data);
     } catch (error) {

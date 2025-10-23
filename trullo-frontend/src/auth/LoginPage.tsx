@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "./AuthContext";
+import { API_BASE_URL } from "../config";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -10,7 +11,7 @@ export default function LoginPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/trullo/login", {
+      const res = await fetch(`${API_BASE_URL}/trullo/login`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
